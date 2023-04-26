@@ -30,7 +30,6 @@ public class UserService implements UserDetailsService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Query("select u from User u left join fetch u.roles where u.username=:username")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
@@ -56,7 +55,6 @@ public class UserService implements UserDetailsService {
         entityManager.merge(user);
     }
 
-    @Query("select u from User u left join fetch u.roles where u.id=:id")
     public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         return user.orElse(new User());
@@ -67,7 +65,7 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(id);
     }
 
-    @Query("select u from User u left join fetch u.roles")
+//    @Query("select u from User u left join fetch u.roles")
     public List<User> allUsers() {
         return userRepository.findAll();
     }

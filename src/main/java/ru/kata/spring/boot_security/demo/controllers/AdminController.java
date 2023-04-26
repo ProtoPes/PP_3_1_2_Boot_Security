@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -34,11 +36,16 @@ public class AdminController {
         if (bindingResult.hasErrors())
             return "admin/new";
         userService.addUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     @GetMapping()
-    public String showAdminPage() {
+    public String showAdminPage(ModelMap usersModel, Model adminModel) {
+        usersModel.addAttribute("users", userService.allUsers());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User admin = (User) authentication.getPrincipal();
+        adminModel.addAttribute("admin", admin);
+        adminModel.addAttribute("newUser", new User());
         return "admin/admin";
     }
 
@@ -51,7 +58,7 @@ public class AdminController {
     @GetMapping("/{id}/edit")
     public String editUser(Model model, @PathVariable("id") long id) {
         model.addAttribute("user", userService.getUserById(id));
-        return "admin/edit";
+        return "admin/admin";
     }
     @PatchMapping("/edit")
     public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
@@ -60,13 +67,13 @@ public class AdminController {
             return "admin/edit";
         }
         userService.updateUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
 
     @DeleteMapping("/{id}/delete")
     public String deleteUser(@PathVariable("id") long id) {
-        userService.deleteUser(id);
-        return "redirect:/admin/users";
+        userService.getUserById(id);
+        return "redirect:/admin";
     }
 }
