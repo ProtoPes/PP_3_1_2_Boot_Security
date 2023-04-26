@@ -21,6 +21,7 @@
       <th>Имя</th>
       <th>Звание</th>
       <th>Возраст</th>
+      <th>Роли</th>
       <th></th>
       <th></th>
     </tr>
@@ -28,6 +29,7 @@
       <td><a th:text="${user.getUsername()}" /></td>
       <td><a th:text="${user.getPosition()}" /></td>
       <td><a th:text="${user.getAge()}" /></td>
+      <td><a th:text="${user.showRoles()}" /></td>
       <td>
         <form th:method="GET" th:action="@{{id}/edit(id=${user.getId()})}">
           <input type="submit" value="Редактировать">
