@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -21,25 +22,20 @@ public class User implements UserDetails {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     @NotNull
-    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
     private String username;
 
     @Column(name = "position")
-    @NotNull
-    @Size(min = 2, max = 100, message = "Ранг должен быть от 2 до 100 символов длиной")
     private String position;
 
-    @Min(value = 18, message = "До 18-ти не получится!")
+    @Column(name = "age", nullable = false)
     @NotNull
-    @Column(name = "age")
     private short age;
 
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     @NotNull
-    @Size(min = 6, max = 100, message = "Пароль должен содержать от 6 до 20 символов ")
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -124,14 +120,38 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public String getStringRoles() {
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String showRoles() {
         StringBuilder stringBuilder = new StringBuilder();
         getRoles().forEach(x -> stringBuilder.append(x).append(" "));
         return stringBuilder.toString();
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", position='" + position + '\'' +
+                ", age=" + age +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

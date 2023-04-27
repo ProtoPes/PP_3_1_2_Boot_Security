@@ -8,6 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.User;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
@@ -17,63 +18,52 @@ import javax.validation.Valid;
 @RequestMapping("/admin")
 public class AdminController {
 
+    private final RoleService roleService;
     private final UserValidator userValidator;
     private final UserService userService;
 
-    public AdminController(UserValidator userValidator, UserService userService) {
+    public AdminController(RoleService roleService, UserValidator userValidator, UserService userService) {
+        this.roleService = roleService;
         this.userValidator = userValidator;
         this.userService = userService;
-    }
-
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "admin/new";
     }
 
     @PostMapping()
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors())
-            return "admin/new";
+        if (bindingResult.hasErrors()) {
+            return "redirect:/admin?error=name";
+        }
         userService.addUser(user);
         return "redirect:/admin";
     }
 
     @GetMapping()
-    public String showAdminPage(ModelMap usersModel, Model adminModel) {
-        usersModel.addAttribute("users", userService.allUsers());
+    public String showAdminPage(@RequestParam(required = false) String error, ModelMap usersModel, Model adminModel) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User admin = (User) authentication.getPrincipal();
+        usersModel.addAttribute("users", userService.allUsers());
         adminModel.addAttribute("admin", admin);
         adminModel.addAttribute("newUser", new User());
+        adminModel.addAttribute("roles", roleService.getAllRoles());
+        if (error != null)
+            adminModel.addAttribute("error", error);
         return "admin/admin";
     }
 
-    @GetMapping("/users")
-    public String showAllUsers(ModelMap model) {
-        model.addAttribute("users", userService.allUsers());
-        return "admin/users";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String editUser(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "admin/admin";
-    }
     @PatchMapping("/edit")
-    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
+    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", user);
-            return "admin/edit";
+            return "redirect:/admin?error=name";
         }
         userService.updateUser(user);
         return "redirect:/admin";
     }
 
-
     @DeleteMapping("/{id}/delete")
     public String deleteUser(@PathVariable("id") long id) {
-        userService.getUserById(id);
+        userService.deleteUser(id);
         return "redirect:/admin";
     }
 }
