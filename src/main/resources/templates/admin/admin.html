@@ -48,7 +48,15 @@
 
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="col-5">
                         <h2>Admin panel</h2>
+                        </div>
+                        <div class="col-5">
+                            <span class="alert alert-danger alert-dismissible" role="alert" th:if="${error}=='name'" style="color: red">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                Username already exists!
+                            </span>
+                        </div>
                     </div>
                     <div class="card">
                         <div class="card-header">
@@ -74,18 +82,7 @@
                                         <div class="container border border-secondary border-opacity-10">
                                             <div class="row">
                                                 <div class="col-12 border border-secondary border-opacity-25 bg-opacity-10 bg-secondary">
-                                                    <div class="row">
-                                                    <div class="col-2">
-                                                    <h5>
-                                                        All users
-                                                    </h5>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <span th:if="${error}=='name'" style="color: red">
-                                                            Username already exists!
-                                                        </span>
-                                                    </div>
-                                                    </div>
+                                                    <h5>All users</h5>
                                                 </div>
                                                 <div class="container text-center gy-3">
                                                     <table class="table border border-top">
@@ -184,14 +181,11 @@
                                                                                                        id="password-edit" required>
                                                                                             </div>
                                                                                             <div class="mb-2">
-                                                                                                <label
-                                                                                                       class="form-label">Role</label>
-                                                                                                <div th:each="role : ${roles}">
-                                                                                                    <label for="edit_user_role"></label>
-                                                                                                    <input th:if="${role.name}=='ROLE_USER'" checked required type="checkbox" id="edit_user_role" name="roles" th:text="${role.beautifulName}" th:value="${role.id}"/>
-                                                                                                    <label for="edit_other_roles"></label>
-                                                                                                    <input th:if="${role.name}!='ROLE_USER'" type="checkbox" id="edit_other_roles" name="roles" th:text="${role.beautifulName}" th:value="${role.id}"/>
-                                                                                                </div>
+                                                                                                <label class="form-label">Role</label>
+                                                                                                <select class="form-select" size="2" name="roles" aria-label="select role" required>
+                                                                                                    <option selected value="1">User</option>
+                                                                                                    <option value="1, 2">Admin</option>
+                                                                                                </select>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="modal-footer">
@@ -343,12 +337,10 @@
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Role</label>
-                                                    <div th:each="role : ${roles}">
-                                                        <label for="user_role"></label>
-                                                        <input th:if="${role.name}=='ROLE_USER'" checked required type="checkbox" id="user_role" name="roles" th:text="${role.beautifulName}" th:value="${role.id}"/>
-                                                        <label for="other_roles"></label>
-                                                        <input th:if="${role.name}!='ROLE_USER'" type="checkbox" id="other_roles" name="roles" th:text="${role.beautifulName}" th:value="${role.id}"/>
-                                                    </div>
+                                                    <select class="form-select" size="2" name="roles" aria-label="select role" required>
+                                                        <option selected value="1">User</option>
+                                                        <option value="1, 2">Admin</option>
+                                                    </select>
                                                 </div>
                                                 <button type="submit" class="btn btn-success">Add new user</button>
                                             </form>
