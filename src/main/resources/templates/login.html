@@ -26,10 +26,10 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             </div>
         <div class="input-group">
-            <input class="form-control" type="text" name="username" placeholder="Username" aria-label="username">
+            <input class="form-control" type="text" name="username" autocomplete="username" placeholder="Username" aria-label="username">
         </div>
         <div class="input-group">
-            <input class="form-control" type="password" name="password" placeholder="Password" aria-label="password">
+            <input class="form-control" type="password" name="password" autocomplete="current-password" placeholder="Password" aria-label="password">
         </div>
         <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary btn-block">Sign in</button>

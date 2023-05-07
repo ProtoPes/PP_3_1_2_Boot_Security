@@ -29,7 +29,7 @@ public class UserValidator implements Validator {
         long id = user.getId();
         Optional<User> userToFind = userRepository.findByUsername(user.getUsername());
         if (userToFind.isPresent() && (id == 0 || id != userToFind.get().getId())) {
-            errors.rejectValue("username", "1", "Имя уже существует");
+            errors.rejectValue("username", "1", String.format("Username %s already exists!", user.getUsername()));
         }
     }
 }

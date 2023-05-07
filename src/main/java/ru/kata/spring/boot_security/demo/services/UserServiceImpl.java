@@ -36,10 +36,9 @@ public class UserServiceImpl implements UserService{
 
 
     @Transactional
-    public void addUser(User user) {
-        System.out.println(user);
+    public User addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional
